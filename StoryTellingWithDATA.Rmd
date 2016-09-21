@@ -9,8 +9,11 @@ output:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
-### Load Data for custodian_deaths.csv for the state of Texas, USA
-tx <- read.csv2("custodial-deaths.csv", header = TRUE,sep=",")
+library(RCurl)
+#Load Data for custodian_deaths.csv for the state of Texas, USA
+url <- getURL("http://texasjusticeinitiative.org/wp-content/themes/tji/api/v1/download.php?page=&", ssl.verifyhost=FALSE, ssl.verifypeer=FALSE)
+class(url)
+tx <- read.csv2(textConnection(url), header = TRUE,sep=",")
 age <- as.numeric(tx$Age)
 
 ```
