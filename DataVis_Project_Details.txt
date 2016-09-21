@@ -1,0 +1,10 @@
+Story Board Visualization Project
+
+
+This assignment will be a longer project level task.  You objective will be to create a narrative visualization for a provided data set.  You may work individually or with a team of no more than 4 people. The individual/group project can be developed in a group but will be submitted by everyone individually.
+
+The Texas Justice Initiative maintains and powerful data set on the number of people that have died while incarcerated in the state of Texas. You job will be to evaluate the data set and develop a powerful narrative. You must use the Texas Justice Initiative data but you are welcome to incorporate any additional datasets you wish to tell your narrative (data must be open and cited).
+
+You grade for this assignment will be based on the quality of your graphics, the content of you narrative and your overall presentation.  
+
+TJI data is available here: http://texasjusticeinitiative.org/wp-content/themes/tji/api/v1/download.php?page=&

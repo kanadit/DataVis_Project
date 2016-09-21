@@ -1,0 +1,47 @@
+---
+title: "Story Telling With DATA"
+output:
+  flexdashboard::flex_dashboard:
+      storyboard: true
+      social: menu
+      source: embed
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+### Load Data for custodian_deaths.csv for the state of Texas, USA
+tx <- read.csv2("custodial-deaths.csv", header = TRUE,sep=",")
+age <- as.numeric(tx$Age)
+
+```
+
+
+
+```{r}
+
+
+```
+### Custodial Death in the state of Texas, USA
+
+```{r}
+library(leaflet)
+library(maps)
+# Texas county map
+map('county', 'texas', fill = TRUE, col = palette())
+
+```
+
+
+### Chart B
+
+```{r}
+num <- unique(tx$Department.Name, incomparables = FALSE)
+print(num)
+
+```
+
+### Chart C
+
+```{r}
+
+```
