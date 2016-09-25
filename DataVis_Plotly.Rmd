@@ -1,0 +1,220 @@
+---
+title: "FinalProject"
+author: "Dimple Kanadia"
+output:  
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    social: menu
+    source_code: embed
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(plotly)
+library(plyr)
+get
+police <- read.csv("custodial-deaths_police.csv")
+prison <- read.csv("custodial-deaths_prison.csv")
+
+police_df <- subset(police, select = -c(Summary))
+prison_df <- subset(prison, select = -c(Summary))
+
+police_df$Death.Date <- as.Date(police_df$Death.Date)
+police_df$year <- year(police_df$Death.Date)
+
+prison_df$Death.Date <- as.Date(prison_df$Death.Date)
+prison_df$year <- year(prison_df$Death.Date)
+```
+
+Police-Custody
+=======================================================================
+
+Row {data-height=550}
+-----------------------------------------------------------------------
+
+### Year of Death
+
+```{r}
+cnt <- count(police_df$year)
+
+f <- list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f"
+)
+xas <- list(
+  title = "Year",
+  titlefont = f
+)
+yas <- list(
+  title = "Number of Deaths",
+  titlefont = f
+)
+p <- plot_ly(data = cnt, x = x, y = freq, line = list(shape = "spline"), name = "Deaths") %>%
+  layout(xaxis = xas, yaxis = yas) %>% 
+  add_trace(y = fitted(loess(freq ~ as.numeric(x))), x = x, name = "Curve Fit")
+p
+```
+
+
+Row {data-height=450}
+-------------------------------------
+
+### Race/Ethnicity
+
+```{r}
+ethni <- police_df[, c(7)]
+ethnicity_df <- data.frame(table(ethni))
+
+plot_ly(ethnicity_df, labels = ethni, values = Freq, type = "pie")
+```
+
+### Deaths by Age
+
+```{r}
+f <- list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f"
+)
+age <- list(
+  title = "Age",
+  titlefont = f
+)
+count <- list(
+  title = "Number of Deaths",
+  titlefont = f
+)
+P <- plot_ly(x = police_df$Age, type = "histogram", color = police_df$Sex) %>% 
+  layout(xaxis = age, yaxis = count,
+         shapes = list(type = "rect",
+                    fillcolor = "blue", line = list(color = "blue"), opacity = 0.5,
+                    x0 = "26.5", x1 = "34.5", xref = "x",
+                    y0 = 0, y1 = 80, yref = "y"))
+P
+```
+
+### Cause of Death
+
+```{r}
+cause <- police_df[, c(11)]
+cause_df <- data.frame(table(cause))
+
+plot_ly(cause_df, labels = cause, values = Freq, type = "pie")
+```
+
+Prison-Custody
+=======================================================================
+
+Row {data-height=550}
+-----------------------------------------------------------------------
+
+### Year of Death
+
+```{r}
+y <- prison_df$year
+year <- data.frame(table(y))
+year$yr <- year$y
+
+f <- list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f"
+)
+xas <- list(
+  title = "Year",
+  titlefont = f
+)
+yas <- list(
+  title = "Number of Deaths",
+  titlefont = f
+)
+p <- plot_ly(data = year, x = yr, y = Freq, line = list(shape = "spline"), name = "Deaths") %>%
+  layout(xaxis = xas, yaxis = yas) %>% 
+  add_trace(y = fitted(loess(Freq ~ as.numeric(yr))), x = yr, name = "Curve Fit")
+p
+```
+
+
+Row {data-height=450}
+-------------------------------------
+
+### Race/Ethnicity
+
+```{r}
+ethni <- prison_df[, c(7)]
+ethnicity_df <- data.frame(table(ethni))
+
+plot_ly(ethnicity_df, labels = ethni, values = Freq, type = "pie")
+```
+
+### Deaths by Age
+
+```{r}
+f <- list(
+  family = "Courier New, monospace",
+  size = 18,
+  color = "#7f7f7f"
+)
+age <- list(
+  title = "Age",
+  titlefont = f
+)
+count <- list(
+  title = "Number of Deaths",
+  titlefont = f
+)
+P <- plot_ly(x = prison_df$Age, type = "histogram", color = prison_df$Sex) %>% 
+  layout(xaxis = age, yaxis = count,
+         shapes = list(type = "rect",
+                    fillcolor = "blue", line = list(color = "blue"), opacity = 0.5,
+                    x0 = "26.5", x1 = "34.5", xref = "x",
+                    y0 = 0, y1 = 80, yref = "y"))
+P
+```
+
+### Cause of Death
+
+```{r}
+cause <- prison_df[, c(11)]
+cause_df <- data.frame(table(cause))
+
+plot_ly(cause_df, labels = cause, values = Freq, type = "pie")
+```
+
+Summary
+=======================================================================
+
+Row {data-height=250}
+----------------------------------------
+
+### Increase in Deaths
+
+* Deaths reported by law enforcement agencies increased by 84% from 2005 to 2015 (from 83 to 153) and more than doubled since 2006, the year with the fewest reported deaths (74). This increase is largely due to increases in deaths by suicide, justifiable homicide, other homicide and “other.” Deaths by “other” went from zero reported in 2005 to 29 reported in 2015; these deaths fall into three categories: 1) officer-involved shootings (12); 2) a person becoming unresponsive after being handcuffed (10); and 3) a person becoming unresponsive after being tased (7).
+
+* The average number of deaths in prisons per year in 2005-2015 was 426. 2008 and 2012 saw the highest numbers of deaths, at 472 and 467, respectively.
+
+Row
+----------------------------------------
+
+### Race/Ethnicity
+
+* While Latinos/as represented 27% of deaths in jail or prison custody, they represented 33% of deaths in police interactions. We saw the reverse for white people, who represented 42% of deaths in jail or prison custody, but 38% of deaths in police interactions. Black people represented approximately 30% of deaths across custody types.
+
+* While white people made up on average 31% of the prison population in 2005-2014 (the last year for which TDCJ data were available), they made up 42% of prison deaths in 2005-2015. White people who died were also older than people of other races or ethnicities who died: the median age of white decedents was 57, while the median age for black and Hispanic decedents was 53.
+
+### Cause of Death
+
+* The custodial death report does not have a cause of death specific to shootings by law enforcement, but most deaths caused by police shooting were marked as “justifiable homicide.” Still others were marked as “other homicide” or just “other.” Justifiable homicide was the most common cause of death in police encounters, having caused 50% of all such deaths.
+
+* Ninety percent of prison deaths in 2005-2015 were reported to be of natural causes. For people ages 35 and under, the leading cause of death was suicide.
+
+### Age
+
+* People who died in police custody or in police interactions were younger than people who died in prisons and jails, and black and Latino/a people were younger than white people who died in police interactions. The median age of a white person who died in an encounter with police was 38, 31 for black people and 30 for Latino/a people.
+
+* The median age of a person who died in prison custody between 2005 and 2015 was 54. While over 90% of reported deaths were caused by natural causes, this median age of death is far below the life expectancy of the average Texan, which was 72 for persons born in 1970.
+
